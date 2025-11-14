@@ -3,7 +3,7 @@ author: Farzad Maleki
 description: "I study patterns—in markets, minds, and meaning."
 # IMPORTANT: Replace "your-username" with your actual GitHub username.
 url: "https://farzadona.github.io"
-baseurl: ""
+baseurl: "/farzad-works.github.io"
 
 # Build settings
 theme: minima # A good default theme, can be removed if you want 100% custom styling.

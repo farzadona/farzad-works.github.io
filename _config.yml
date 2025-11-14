@@ -7,3 +7,4 @@ baseurl: "/farzad-works.github.io"
 
 # Build settings
 theme: minima # A good default theme, can be removed if you want 100% custom styling.
+future: true

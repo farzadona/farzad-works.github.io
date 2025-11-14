@@ -41,11 +41,192 @@ body {
   color: #212529;
 }
 
+
+
 /*=============================================================================
+
   Related Posts styles
+
 =============================================================================*/
+
 .related-posts {
+
   margin-top: 40px;
+
   padding-top: 20px;
+
   border-top: 1px solid #e9ecef;
+
+}
+
+
+
+/* Custom CSS from example */
+
+body {
+
+    /* Dark background, default text color, and font */
+
+    background-color: #111;
+
+    color: #f0f0f0;
+
+    font-family: 'Inter', sans-serif;
+
+    /* Normal scrolling enabled */
+
+}
+
+
+
+/* The 3D Canvas (Fixed Background) */
+
+#bg-canvas {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    z-index: -1; /* CRITICAL: Place it behind all content */
+
+}
+
+
+
+/* The "Frosted Glass" Blog Post Card */
+
+.blog-post {
+
+    /* Semi-transparent background */
+
+    background: rgba(10, 10, 10, 0.4);
+
+    
+
+    /* The blur effect */
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+
+    
+
+    /* Subtle border */
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    
+
+    /* Styling */
+
+    border-radius: 1rem; /* 16px */
+
+    padding: 2rem; /* 32px */
+
+    margin-bottom: 2rem; /* 32px */
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+}
+
+
+
+/* Styling for content inside the card */
+
+.blog-post h1 {
+
+    font-size: 2.25rem; /* 36px */
+
+    font-weight: 700;
+
+    line-height: 2.5rem; /* 40px */
+
+    margin-bottom: 0.5rem; /* 8px */
+
+    color: #fff;
+
+}
+
+
+
+.blog-post h2 {
+
+    font-size: 1.5rem; /* 24px */
+
+    font-weight: 600;
+
+    margin-top: 2rem; /* 32px */
+
+    margin-bottom: 1rem; /* 16px */
+
+    color: #fff;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    padding-bottom: 0.5rem; /* 8px */
+
+}
+
+
+
+.blog-post p {
+
+    font-size: 1rem; /* 16px */
+
+    line-height: 1.75; /* 28px */
+
+    color: #d1d5db; /* text-gray-300 */
+
+    margin-bottom: 1.5rem; /* 24px */
+
+}
+
+
+
+.blog-post .meta-info {
+
+    font-size: 0.875rem; /* 14px */
+
+    color: #9ca3af; /* text-gray-400 */
+
+    margin-bottom: 2rem; /* 32px */
+
+}
+
+
+
+.blog-post img {
+
+    border-radius: 0.5rem; /* 8px */
+
+    margin-top: 1rem; /* 16px */
+
+    margin-bottom: 1rem; /* 16px */
+
+    width: 100%;
+
+    height: auto;
+
+}
+
+
+
+.blog-post blockquote {
+
+    border-left: 4px solid #8b5cf6; /* violet-500 */
+
+    padding-left: 1.5rem; /* 24px */
+
+    margin: 1.5rem 0;
+
+    font-style: italic;
+
+    color: #d1d5db; /* text-gray-300 */
+
 }

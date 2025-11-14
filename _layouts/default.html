@@ -8,58 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #111;
-            color: #f0f0f0;
-            font-family: 'Inter', sans-serif;
-        }
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-        }
-        .blog-post {
-            background: rgba(10, 10, 10, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .blog-post h1 {
-            font-size: 2.25rem;
-            font-weight: 700;
-            line-height: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-        .blog-post h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            color: #fff;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 0.5rem;
-        }
-        .blog-post p {
-            font-size: 1rem;
-            line-height: 1.75;
-            color: #d1d5db;
-            margin-bottom: 1.5rem;
-        }
-        .blog-post .meta-info {
-            font-size: 0.875rem;
-            color: #9ca3af;
-            margin-bottom: 2rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
 </head>
 <body class="w-full">
 

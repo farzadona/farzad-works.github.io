@@ -24,7 +24,7 @@ layout: default
       {{ content }}
 
       {% if page.tags.size > 0 %}
-      <div class="post-tags" style="margin-top: 30px;">
+      <div class="post-tags">
         {% for tag in page.tags %}
           <a class="post-tag" href="{{ site.baseurl }}/tags/{{ tag | slugify }}/">
             {{ tag }}

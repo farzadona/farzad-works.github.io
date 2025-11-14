@@ -67,9 +67,9 @@
     <header class="fixed top-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm shadow-sm">
         <div class="mx-auto max-w-5xl px-6 sm:px-8">
             <div class="flex h-16 items-center justify-between">
-                <div class="text-2xl font-black tracking-tighter text-gray-900"> <a href="/">FM</a> </div>
+                <div class="text-2xl font-black tracking-tighter text-gray-900"> <a href="{{ site.baseurl }}/">FM</a> </div>
                 <div class="text-md font-semibold text-gray-700">
-                    <a href="#about-me" class="transition-colors hover:text-black">About / Contact</a>
+                    <a href="{{ site.baseurl }}/#about-me" class="transition-colors hover:text-black">About / Contact</a>
                 </div>
             </div>
         </div>
@@ -322,7 +322,7 @@
         document.getElementById('read-blog-btn')?.addEventListener('click', () => {
             triggerCollapse();
             // Navigate to the blog after the animation has started
-            setTimeout(() => { window.location.href = '/blog/'; }, 2000); // Set to 2 seconds (2000ms)
+            setTimeout(() => { window.location.href = '{{ site.baseurl }}/blog/'; }, 2000); // Set to 2 seconds (2000ms)
         });
 
         ['view-projects-btn', 'explore-projects-btn', 'about-contact-btn'].forEach(id => {

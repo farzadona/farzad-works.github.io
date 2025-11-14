@@ -1,0 +1,16 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+@import "minima";
+
+/*=============================================================================
+  Your custom styles go here
+=============================================================================*/
+
+// A softer, more modern background color for the body.
+// This is a gentle alternative to pure white.
+body {
+  background-color: #f8f9fa; // A light gray
+  color: #212529; // A darker text color for better contrast
+}

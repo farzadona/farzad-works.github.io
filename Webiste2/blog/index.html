@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - FM</title>
+    
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Load Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 3. Base styles for dark mode */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* text-gray-900 */
+            color: #f9fafb; /* text-gray-50 */
+        }
+        
+        /* 4. Fixed canvas (z-index 0) */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: transparent;
+        }
+        
+        /* 5. Scrollable main content (z-index 1) */
+        main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        /* 6. Loading Message */
+        #loading-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            font-size: 1.25rem;
+            color: #f9fafb;
+            background-color: rgba(17, 24, 39, 0.8);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 7. Blog Post Styling */
+        .blog-post-item:hover .blog-title {
+            color: #ffffff;
+        }
+        .blog-post-item:hover .blog-arrow {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-50">
+
+    <header class="fixed top-0 left-0 right-0 z-10 bg-gray-900/80 backdrop-blur-sm shadow-sm">
+        <div class="mx-auto max-w-5xl px-6 sm:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="text-2xl font-black tracking-tighter text-gray-50">
+                    <a href="/">FM</a> <!-- Link back to home -->
+                </div>
+                <div class="text-md font-semibold text-gray-300">
+                    <a href="/#about-me" class="transition-colors hover:text-white">About / Contact</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Canvas for Three.js scene -->
+    <canvas id="webgl-canvas"></canvas>
+    
+    <!-- Loading Message -->
+    <div id="loading-message">Loading...</div>
+
+    <!-- Scrollable content -->
+    <main class="pt-32 pb-20">
+        <div class="mx-auto max-w-3xl px-6 sm:px-8">
+            <h1 class="text-5xl font-black mb-12">Writings & Ideas</h1>
+            
+            <!-- Blog posts will be injected here by JavaScript -->
+            <div id="blog-list" class="space-y-10">
+                <!-- Example of a generated post item -->
+                <!-- 
+                <a href="#" class="block group blog-post-item" data-node-id="0">
+                    <div class="flex items-baseline justify-between">
+                        <h2 class="text-2xl font-bold text-gray-200 transition-colors group-hover:text-white blog-title">
+                            Why Questions > Answers <span class="inline-block transition-transform group-hover:translate-x-1 blog-arrow">→</span>
+                        </h2>
+                        <p class="text-sm text-gray-400">Oct 28, 2025</p>
+                    </div>
+                    <div class="mt-2">
+                        <span class="inline-block bg-gray-700 text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">Logic</span>
+                        <span class="inline-block bg-gray-700 text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">Frameworks</span>
+                    </div>
+                </a> 
+                -->
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-12 text-center">
+        <p class="text-sm text-gray-500">© 2025 FM — All rights reserved.</p>
+    </footer>
+
+    <!-- Import map for Three.js -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <!-- Main JavaScript Logic -->
+    <script type="module">
+        import * as THREE from 'three';
+
+        // === Basic Setup ===
+        const canvas = document.getElementById('webgl-canvas');
+        const loadingMessage = document.getElementById('loading-message');
+        const blogListContainer = document.getElementById('blog-list');
+        const scene = new THREE.Scene();
+        const sizes = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+        // === Camera ===
+        const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+        camera.position.z = 15;
+        scene.add(camera);
+        
+        // === Renderer ===
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true
+        });
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // === "Idea Constellation" Logic ===
+        const modelColor = 0xCCCCCC; // Light gray for dark mode
+        const highlightColor = 0xFFFFFF; // White for hover
+        const constellationGroup = new THREE.Group();
+        let nodes = []; // To store references to node meshes
+
+        async function createConstellation() {
+            // This Liquid code is processed by Jekyll when the site is built.
+            // It creates a valid JavaScript array of post objects directly in the final HTML.
+            const posts = [ {% for post in site.posts %} {
+                "title": "{{ post.title | escape }}",
+                "url": "{{ site.baseurl }}{{ post.url }}",
+                "date": "{{ post.date | date_to_xmlschema }}",
+                "tags": {{ post.tags | jsonify }}
+            } {% unless forloop.last %},{% endunless %} {% endfor %} ];
+            
+            // 1. Generate Blog Post List in HTML
+            posts.forEach((post, index) => {
+                // We'll need to format the date from Jekyll
+                const postDate = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const tagsHtml = post.tags.map(tag => `<span class="inline-block bg-gray-700 text-gray-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded">${tag}</span>`).join('');
+                const postHtml = ` <a href="${post.url}" class="block group blog-post-item" data-node-id="${index}">
+                        <div class="flex items-baseline justify-between flex-wrap">
+                            <h2 class="text-2xl font-bold text-gray-200 transition-colors group-hover:text-white blog-title">
+                                ${post.title} <span class="inline-block transition-transform group-hover:translate-x-1 blog-arrow">→</span>
+                            </h2>
+                            <p class="text-sm text-gray-400 flex-shrink-0 ml-4">${postDate}</p>
+                        </div>
+                        <div class="mt-2">${tagsHtml}</div>
+                    </a>`; blogListContainer.innerHTML += postHtml;
+            });
+
+            // 2. Generate 3D nodes
+            const nodeGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const nodeMaterial = new THREE.MeshBasicMaterial({ color: modelColor });
+            
+            for (let i = 0; i < posts.length; i++) {
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+                // Position nodes randomly in a sphere
+                node.position.set(
+                    (Math.random() - 0.5) * 15,
+                    (Math.random() - 0.5) * 10,
+                    (Math.random() - 0.5) * 10
+                );
+                nodes.push(node);
+                constellationGroup.add(node);
+            }
+
+            // 3. Generate connecting lines
+            const lineMaterial = new THREE.LineBasicMaterial({ color: modelColor, transparent: true, opacity: 0.3 });
+            const linePoints = [];
+            for(let i = 0; i < nodes.length; i++) {
+                // Connect each node to a few others randomly
+                const connections = Math.floor(Math.random() * 2) + 1;
+                for(let j = 0; j < connections; j++) {
+                    const targetNode = nodes[Math.floor(Math.random() * nodes.length)];
+                    if (targetNode !== nodes[i]) {
+                        linePoints.push(nodes[i].position);
+                        linePoints.push(targetNode.position);
+                    }
+                }
+            }
+            const lineGeometry = new THREE.BufferGeometry().setFromPoints(linePoints);
+            const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+            constellationGroup.add(lines);
+
+            scene.add(constellationGroup);
+            loadingMessage.style.display = 'none';
+
+            // 4. Add hover listeners
+            document.querySelectorAll('.blog-post-item').forEach(item => {
+                item.addEventListener('mouseenter', (e) => {
+                    const nodeId = parseInt(e.currentTarget.dataset.nodeId);
+                    if (nodes[nodeId]) {
+                        nodes[nodeId].material.color.set(highlightColor);
+                    }
+                });
+                item.addEventListener('mouseleave', (e) => {
+                    const nodeId = parseInt(e.currentTarget.dataset.nodeId);
+                    if (nodes[nodeId]) {
+                        nodes[nodeId].material.color.set(modelColor);
+                    }
+                });
+            });
+        }
+
+        createConstellation();
+
+        // === Resize Handler ===
+        window.addEventListener('resize', () => {
+            sizes.width = window.innerWidth;
+            sizes.height = window.innerHeight;
+            camera.aspect = sizes.width / sizes.height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        });
+
+        // === Animation Loop ===
+        const clock = new THREE.Clock();
+        const animate = () => {
+            const elapsedTime = clock.getElapsedTime();
+
+            // Animate constellation
+            constellationGroup.rotation.y = elapsedTime * 0.05;
+            constellationGroup.rotation.x = elapsedTime * 0.02;
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        };
+
+        animate();
+    </script>
+</body>
+</html>

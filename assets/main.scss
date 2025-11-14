@@ -14,3 +14,29 @@ body {
   background-color: #f8f9fa; // A light gray
   color: #212529; // A darker text color for better contrast
 }
+
+/*=============================================================================
+  Tag styles
+=============================================================================*/
+
+.post-tags {
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+.post-tag {
+  display: inline-block;
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  margin-right: 5px;
+  text-decoration: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.post-tag:hover {
+  background-color: #ced4da; /* Darker gray on hover */
+  color: #212529;
+}

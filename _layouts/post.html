@@ -1,172 +1,67 @@
 ---
-layout: home
-is_post: true
+layout: default
 ---
-<!-- 1. Load Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
 
-<!-- 2. Load Google Font "Inter" -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
-<body class="w-full">
+  <div class="blog-post mt-16">
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="post-meta meta-info">
+      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
+      {%- elsif site.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ site.author | escape }}</span></span>
+      {%- endif -%}
+    </p>
+  </div>
 
-<!-- This is the 3D background. It stays fixed. -->
-<canvas id="bg-canvas"></canvas>
+  <div class="blog-post">
+    <div class="post-content e-content" itemprop="articleBody">
+      {{ content }}
 
-<div class="relative w-full max-w-3xl mx-auto p-4 md:p-8 z-10">
-  <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-
-    <div class="blog-post mt-16">
-      <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
-      <p class="post-meta meta-info">
-        <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
-          {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-          {{ page.date | date: date_format }}
-        </time>
-        {%- if page.author -%}
-          • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
-        {%- elsif site.author -%}
-          • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ site.author | escape }}</span></span>
-        {%- endif -%}
-      </p>
-    </div>
-
-    <div class="blog-post">
-      <div class="post-content e-content" itemprop="articleBody">
-        {{ content }}
-
-        {% if page.tags.size > 0 %}
-        <div class="post-tags" style="margin-top: 30px;">
-          {% for tag in page.tags %}
-            <a class="post-tag" href="{{ site.baseurl }}/tags/{{ tag | slugify }}/">
-              {{ tag }}
-            </a>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    {%- if site.posts.size > 1 -%}
-    <div class="blog-post">
-      <div class="related-posts">
-        <h2>Related Posts</h2>
-        {% assign related_posts = "" | split: "" %}
+      {% if page.tags.size > 0 %}
+      <div class="post-tags" style="margin-top: 30px;">
         {% for tag in page.tags %}
-          {% for post in site.tags[tag] %}
-            {% unless post.url == page.url %}
-              {% assign related_posts = related_posts | push: post %}
-            {% endunless %}
-          {% endfor %}
+          <a class="post-tag" href="{{ site.baseurl }}/tags/{{ tag | slugify }}/">
+            {{ tag }}
+          </a>
         {% endfor %}
-        {% assign related_posts = related_posts | uniq | sort: "date" | reverse %}
-        <ul class="post-list">
-          {% for post in related_posts limit:5 %}
-            <li>
-              <h3>
-                <a class="post-link" href="{{ post.url | relative_url }}">
-                  {{ post.title | escape }}
-                </a>
-              </h3>
-            </li>
-          {% endfor %}
-        </ul>
       </div>
+      {% endif %}
     </div>
-    {%- endif -%}
+  </div>
 
-    <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
-  </article>
-</div>
+  {%- if site.posts.size > 1 -%}
+  <div class="blog-post">
+    <div class="related-posts">
+      <h2>Related Posts</h2>
+      {% assign related_posts = "" | split: "" %}
+      {% for tag in page.tags %}
+        {% for post in site.tags[tag] %}
+          {% unless post.url == page.url %}
+            {% assign related_posts = related_posts | push: post %}
+          {% endunless %}
+        {% endfor %}
+      {% endfor %}
+      {% assign related_posts = related_posts | uniq | sort: "date" | reverse %}
+      <ul class="post-list">
+        {% for post in related_posts limit:5 %}
+          <li>
+            <h3>
+              <a class="post-link" href="{{ post.url | relative_url }}">
+                {{ post.title | escape }}
+              </a>
+            </h3>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {%- endif -%}
 
-<!-- 7. Load three.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-<script type="module">
-    // === THREE.JS SETUP ===
-    let scene, camera, renderer, knot, pointLight;
-
-    function init3D() {
-        // 1. Scene
-        scene = new THREE.Scene();
-
-        // 2. Camera
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
-
-        // 3. Renderer
-        const canvas = document.getElementById('bg-canvas');
-        renderer = new THREE.WebGLRenderer({ 
-            canvas: canvas, 
-            antialias: true,
-            alpha: true // Allows renderer to be transparent (to see body bg)
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        // 4. Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-        scene.add(ambientLight);
-        
-        pointLight = new THREE.PointLight(0x8b5cf6, 1.5); // violet-500
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
-
-        // 5. Create Objects
-        const geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 100, 16);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x8b5cf6, // A nice violet
-            wireframe: true,
-            metalness: 0.1,
-            roughness: 0.2
-        });
-
-        knot = new THREE.Mesh(geometry, material);
-        knot.position.set(0, 0, 0); // Center the object
-        scene.add(knot);
-    }
-
-    // === ANIMATION LOOP (Decoupled from Scroll) ===
-    function animate() {
-        // This loop runs every frame, regardless of scrolling
-        requestAnimationFrame(animate);
-
-        // 1. Animate the 3D Object
-        knot.rotation.x += 0.001;
-        knot.rotation.y += 0.003;
-
-        // 2. Animate the light for a dynamic effect
-        // We use Date.now() to create a smooth, continuous time-based animation
-        const time = Date.now() * 0.0005;
-        pointLight.position.x = Math.sin(time * 0.7) * 5;
-        pointLight.position.y = Math.cos(time * 0.5) * 5;
-        pointLight.position.z = Math.cos(time * 0.3) * 5;
-
-
-        // 3. Render the scene
-        renderer.render(scene, camera);
-    }
-
-    // === EVENT LISTENERS ===
-    function onResize() {
-        // Update camera
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        // Update renderer
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    }
-
-    // Add resize listener
-    window.addEventListener('resize', onResize);
-    
-    // --- Main ---
-    init3D();
-    animate(); // Start the animation loop
-
-</script>
-
-</body>
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

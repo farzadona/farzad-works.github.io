@@ -318,20 +318,18 @@
             lookAtTarget.set(0, -2, 0); // Look at the pile
         }
 
-        // Add click listener for the blog button to trigger collapse and then navigate
+        // Add click listeners to the buttons
         document.getElementById('read-blog-btn')?.addEventListener('click', () => {
-            // First, trigger the collapse animation
             triggerCollapse();
-            // Then, navigate to the blog page after a 1-second delay
-            setTimeout(() => {
-                window.location.href = '/blog/';
-            }, 1000); // 1000 milliseconds = 1 second
+            // Navigate to the blog after the animation has started
+            setTimeout(() => { window.location.href = '/blog/'; }, 2000); // Set to 2 seconds (2000ms)
         });
 
-        // Add click listeners for other buttons to trigger the collapse
         ['view-projects-btn', 'explore-projects-btn', 'about-contact-btn'].forEach(id => {
             const btn = document.getElementById(id);
-            if (btn) { btn.addEventListener('click', triggerCollapse); }
+            if (btn) {
+                btn.addEventListener('click', triggerCollapse); // These can just trigger the collapse for now
+            }
         });
 
         // === Scroll & Lerp Logic ===

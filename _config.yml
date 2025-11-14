@@ -8,3 +8,20 @@ baseurl: "/farzad-works.github.io"
 # Build settings
 theme: minima # A good default theme, can be removed if you want 100% custom styling.
 future: true
+
+# Header pages
+header_pages:
+  - contact.md
+
+# Excerpt settings
+show_excerpts: true
+
+# Front Matter Defaults
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Farzad Maleki" # Sets a default author for all posts

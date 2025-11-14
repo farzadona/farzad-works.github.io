@@ -1,34 +1,61 @@
 ---
+layout: default
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }} - {{ site.title }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; color: #f9fafb; }
-        .prose { color: #d1d5db; }
-        .prose h1, .prose h2, .prose h3 { color: #f9fafb; }
-        .prose a { color: #93c5fd; }
-        .prose code { color: #f0abfc; }
-        .prose pre { background-color: #1f2937; }
-    </style>
-</head>
-<body class="bg-gray-900">
-    {% include post_header.html %}
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
-    <main class="pt-32 pb-20">
-        <article class="prose prose-lg mx-auto px-6 sm:px-8">
-            <h1>{{ page.title }}</h1>
-            <p class="text-gray-400">Published on {{ page.date | date: "%B %d, %Y" }}</p>
-            <hr class="border-gray-700 my-8">
-            {{ content }}
-        </article>
-    </main>
-</body>
-</html>
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
+      {%- elsif site.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ site.author | escape }}</span></span>
+      {%- endif -%}</p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    {{ content }}
+
+    {% if page.tags.size > 0 %}
+    <div class="post-tags" style="margin-top: 30px;">
+      {% for tag in page.tags %}
+        <a class="post-tag" href="{{ site.baseurl }}/tags/{{ tag | slugify }}/">
+          {{ tag }}
+        </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {%- if site.posts.size > 1 -%}
+  <div class="related-posts">
+    <h2>Related Posts</h2>
+    {% assign related_posts = "" | split: "" %}
+    {% for tag in page.tags %}
+      {% for post in site.tags[tag] %}
+        {% unless post.url == page.url %}
+          {% assign related_posts = related_posts | push: post %}
+        {% endunless %}
+      {% endfor %}
+    {% endfor %}
+    {% assign related_posts = related_posts | uniq | sort: "date" | reverse %}
+    <ul class="post-list">
+      {% for post in related_posts limit:5 %}
+        <li>
+          <h3>
+            <a class="post-link" href="{{ post.url | relative_url }}">
+              {{ post.title | escape }}
+            </a>
+          </h3>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {%- endif -%}
+
+  <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

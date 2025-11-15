@@ -87,7 +87,7 @@
                     Training my critical reasoning muscle.<br>
                     Designing smarter tools.<br>
                     I map chaos.</p>
-                <p id="view-projects-btn" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ View projects → ]</p>
+                <p id="view-projects-btn" data-target-url="{{ site.baseurl }}/blog/" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ View projects → ]</p>
             </div>
         </section>
         
@@ -98,7 +98,7 @@
                      Pattern recognition in trading and life<br>
                      Why questions &gt; answers<br>
                      A framework for deeper thinking</p>
-                <p id="read-blog-btn" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ Read the blog → ]</p>
+                <p id="read-blog-btn" data-target-url="{{ site.baseurl }}/blog/" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ Read the blog → ]</p>
             </div>
         </section>
 
@@ -108,7 +108,7 @@
                 <p class="text-lg mb-4">Building tools and frameworks.<br>
                     Code, concepts, critiques welcome.<br>
                     If you build, think, or trade—we’re already aligned.</p>
-                <p id="explore-projects-btn" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ Explore projects → ]</p>
+                <p id="explore-projects-btn" data-target-url="{{ site.baseurl }}/blog/" class="text-lg font-semibold text-gray-700 cursor-pointer hover:text-black transition-colors">[ Explore projects → ]</p>
             </div>
         </section>
         
@@ -119,7 +119,7 @@
                     Obsessed with logic, language, and leverage.<br>
                     This site is my scratchpad.<br>
                     Let's connect.</p>
-                <a id="about-contact-btn" href="https://farzadona.github.io/farzad-works.github.io/contact/" class="text-lg font-semibold text-gray-700 hover:text-black transition-colors">[ Contact → ]</a>
+                <a id="about-contact-btn" href="https://farzadona.github.io/farzad-works.github.io/contact/" data-target-url="https://farzadona.github.io/farzad-works.github.io/contact/" class="text-lg font-semibold text-gray-700 hover:text-black transition-colors">[ Contact → ]</a>
             </div>
         </section>
     </main>
@@ -312,18 +312,22 @@
             lookAtTarget.set(0, -2, 0); // Look at the pile
         }
 
-        // Add click listeners to the buttons
-        document.getElementById('read-blog-btn')?.addEventListener('click', () => {
-            triggerCollapse();
-            // Navigate to the blog after the animation has started
-            setTimeout(() => { window.location.href = '{{ site.baseurl }}/blog/'; }, 2000); // Set to 2 seconds (2000ms)
-        });
-
-        ['view-projects-btn', 'explore-projects-btn', 'about-contact-btn'].forEach(id => {
+        // Ensure all CTA buttons wait for the collapse animation before navigating away
+        const CTA_DELAY_MS = 2000;
+        ['read-blog-btn', 'view-projects-btn', 'explore-projects-btn', 'about-contact-btn'].forEach(id => {
             const btn = document.getElementById(id);
-            if (btn) {
-                btn.addEventListener('click', triggerCollapse); // These can just trigger the collapse for now
-            }
+            if (!btn) return;
+
+            const targetUrl = btn.dataset.targetUrl || btn.getAttribute('href');
+            btn.addEventListener('click', (event) => {
+                if (targetUrl) {
+                    event.preventDefault();
+                }
+                triggerCollapse();
+                if (targetUrl) {
+                    setTimeout(() => { window.location.href = targetUrl; }, CTA_DELAY_MS);
+                }
+            });
         });
 
         // === Scroll & Lerp Logic ===

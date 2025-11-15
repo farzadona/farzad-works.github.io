@@ -26,9 +26,6 @@ title: Blog
         {% endfor %}
       </div>
       {% endif %}
-      {% if post.excerpt %}
-      <p class="blog-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
-      {% endif %}
       <span class="blog-arrow" aria-hidden="true">→</span>
   </a>
   {% endfor %}

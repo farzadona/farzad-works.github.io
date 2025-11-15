@@ -25,53 +25,98 @@
     {% unless page.custom_background %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script type="module">
-        // === THREE.JS SETUP ===
-        let scene, camera, renderer, knot, pointLight;
+        // === THREE.JS CINEMATIC BACKDROP ===
+        let scene, camera, renderer, knot, keyLight, rimLight, fillLight;
+        const pointer = { x: 0, y: 0 };
+        const CAMERA_BASE_Z = 6;
+        const CAMERA_ZOOM_AMPLITUDE = 1.6;
+        const CAMERA_DRIFT = 0.7;
 
         function init3D() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
+            const bgColor = new THREE.Color(0x040111);
+            scene.background = bgColor;
+            scene.fog = new THREE.Fog(bgColor, 10, 26);
+
+            camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 0, CAMERA_BASE_Z);
+
             const canvas = document.getElementById('bg-canvas');
-            renderer = new THREE.WebGLRenderer({ 
-                canvas: canvas, 
+            renderer = new THREE.WebGLRenderer({
+                canvas,
                 antialias: true,
                 alpha: true
             });
-            renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(bgColor, 1);
+
+            const ambientLight = new THREE.AmbientLight(0x26133f, 0.5);
             scene.add(ambientLight);
-            pointLight = new THREE.PointLight(0x8b5cf6, 1.5);
-            pointLight.position.set(5, 5, 5);
-            scene.add(pointLight);
-            const geometry = new THREE.TorusKnotGeometry(1.5, 0.5, 100, 16);
-            const material = new THREE.MeshStandardMaterial({ 
-                color: 0x8b5cf6,
-                wireframe: true,
-                metalness: 0.1,
-                roughness: 0.2
+
+            keyLight = new THREE.SpotLight(0xb794f6, 2, 35, Math.PI / 4, 0.5, 1);
+            keyLight.position.set(6, 5, 6);
+            scene.add(keyLight);
+
+            rimLight = new THREE.PointLight(0x4fd1ff, 1.2);
+            rimLight.position.set(-5, -2, -4);
+            scene.add(rimLight);
+
+            fillLight = new THREE.PointLight(0xff7edb, 0.6);
+            fillLight.position.set(0, 6, -3);
+            scene.add(fillLight);
+
+            const geometry = new THREE.TorusKnotGeometry(1.8, 0.45, 320, 48);
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0xb794f6,
+                emissive: 0x2a0b4a,
+                emissiveIntensity: 0.4,
+                metalness: 0.85,
+                roughness: 0.18,
+                transmission: 0.35,
+                thickness: 1.1,
+                clearcoat: 0.9,
+                clearcoatRoughness: 0.1
             });
             knot = new THREE.Mesh(geometry, material);
             scene.add(knot);
+
+            window.addEventListener('mousemove', handlePointerMove);
+            window.addEventListener('touchmove', handlePointerMove, { passive: true });
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            knot.rotation.x += 0.001;
-            knot.rotation.y += 0.003;
-            const time = Date.now() * 0.0005;
-            pointLight.position.x = Math.sin(time * 0.7) * 5;
-            pointLight.position.y = Math.cos(time * 0.5) * 5;
-            pointLight.position.z = Math.cos(time * 0.3) * 5;
+        function handlePointerMove(event) {
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            pointer.x = (clientX / window.innerWidth - 0.5) * 2;
+            pointer.y = (clientY / window.innerHeight - 0.5) * 2;
+        }
+
+        function animate(time = 0) {
+            const t = time * 0.0003;
+            const zoom = Math.sin(t * 4) * CAMERA_ZOOM_AMPLITUDE;
+            camera.position.z = CAMERA_BASE_Z + zoom;
+            camera.position.x = Math.sin(t * 2) * CAMERA_DRIFT + pointer.x * 0.8;
+            camera.position.y = Math.cos(t * 1.5) * (CAMERA_DRIFT * 0.4) + pointer.y * 0.5;
+            camera.lookAt(0, 0, 0);
+
+            const pulse = 1 + Math.sin(t * 6) * 0.08;
+            knot.scale.set(pulse, pulse, pulse);
+            knot.rotation.x += 0.004;
+            knot.rotation.y += 0.006;
+
+            rimLight.position.x = Math.cos(t * 3) * 6;
+            rimLight.position.y = Math.sin(t * 3) * 4;
+            fillLight.position.z = Math.sin(t * 1.2) * 4;
+
             renderer.render(scene, camera);
+            requestAnimationFrame(animate);
         }
 
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }
 
         window.addEventListener('resize', onResize);

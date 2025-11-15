@@ -4,33 +4,68 @@ title: Contact
 permalink: /about/
 ---
 
-<section class="mt-24 mb-16 text-center">
-  <p class="uppercase tracking-[0.3em] text-sm text-violet-300">Reach out</p>
-  <h1 class="text-4xl md:text-6xl font-bold text-white mt-4">Let's build something sharp</h1>
-  <p class="mt-4 text-lg text-gray-300 max-w-3xl mx-auto">
-    Whether it's a product sprint, research request, or idea worth pressure-testing, I'm quick on replies and slower on fluff.
-  </p>
+{% assign contact_email = site.email | default: 'hello@farzadmaleki.com' %}
+{% assign github_url = site.github_url | default: 'https://github.com/farzadona' %}
+{% assign linkedin_url = site.linkedin_url | default: 'https://www.linkedin.com/in/farzadmaleki' %}
+{% assign x_url = site.x_url | default: 'https://twitter.com/farzadona' %}
+
+<section class="contact-hero mt-20 text-center">
+  <p class="contact-eyebrow">Signal &amp; response</p>
+  <h1 class="contact-heading">Let's build something sharp</h1>
+  <p class="contact-lede">Reach out with a thesis, a product problem, or an open-ended curiosity. I answer with context, momentum, and next steps.</p>
+  <div class="contact-meta">
+    <span>Avg. reply &lt; 24h</span>
+    <span>Based in EST</span>
+  </div>
 </section>
 
-<section class="grid gap-8 lg:grid-cols-2">
-  <div class="blog-post">
-    <h2 class="text-2xl font-semibold mb-4">Direct line</h2>
-    {% assign contact_email = site.email | default: 'hello@farzadmaleki.com' %}
-    <p class="text-gray-300 mb-6">Email is the fastest way to reach me. Expect a thoughtful response.</p>
-    <a href="mailto:{{ contact_email }}" class="inline-flex items-center justify-center rounded-full bg-violet-500 hover:bg-violet-400 text-white font-semibold text-lg px-8 py-3 transition-colors duration-200 shadow-lg shadow-violet-900/30">
-      {{ contact_email }}
-    </a>
-  </div>
-  <div class="blog-post">
-    <h2 class="text-2xl font-semibold mb-4">Elsewhere</h2>
-    <p class="text-gray-300 mb-6">Find me on the usual platforms for day-to-day updates.</p>
-    <div class="flex flex-wrap gap-4">
-      {% assign github_url = site.github_url | default: 'https://github.com/farzadona' %}
-      {% assign linkedin_url = site.linkedin_url | default: 'https://www.linkedin.com/in/farzadmaleki' %}
-      {% assign x_url = site.x_url | default: 'https://twitter.com/farzadona' %}
-      <a href="{{ github_url }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-full border border-white/20 text-sm tracking-wide text-gray-200 hover:border-white hover:text-white transition-colors">GitHub</a>
-      <a href="{{ linkedin_url }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-full border border-white/20 text-sm tracking-wide text-gray-200 hover:border-white hover:text-white transition-colors">LinkedIn</a>
-      <a href="{{ x_url }}" target="_blank" rel="noreferrer" class="px-5 py-2 rounded-full border border-white/20 text-sm tracking-wide text-gray-200 hover:border-white hover:text-white transition-colors">X / Twitter</a>
+<section class="contact-grid">
+  <article class="contact-card contact-card--highlight">
+    <div class="contact-card__body">
+      <p class="contact-label">Primary channel</p>
+      <h2>Direct line</h2>
+      <p>Email is where I think best. Include context, goals, and constraints if you want a faster outcome.</p>
+      <a href="mailto:{{ contact_email }}" class="contact-pill contact-pill--cta">{{ contact_email }}</a>
+      <p class="contact-footnote">I read every message. Expect thoughtful follow-ups, not canned replies.</p>
     </div>
-  </div>
+  </article>
+  <article class="contact-card">
+    <div class="contact-card__body">
+      <p class="contact-label">What works</p>
+      <h2>Best use cases</h2>
+      <ul class="contact-list">
+        <li>Product / market pattern hunts</li>
+        <li>Strategy critiques &amp; logic checks</li>
+        <li>Collabs on tools, research, or trading</li>
+      </ul>
+      <p class="contact-footnote">Short, clear briefs beat long decks every time.</p>
+    </div>
+  </article>
+</section>
+
+<section class="contact-grid">
+  <article class="contact-card">
+    <div class="contact-card__body">
+      <p class="contact-label">Elsewhere</p>
+      <h2>Find me online</h2>
+      <div class="contact-links">
+        <a href="{{ github_url }}" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="{{ linkedin_url }}" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="{{ x_url }}" target="_blank" rel="noreferrer">X / Twitter</a>
+      </div>
+      <p class="contact-footnote">DMs stay open, but email is still fastest.</p>
+    </div>
+  </article>
+  <article class="contact-card contact-card--dark">
+    <div class="contact-card__body">
+      <p class="contact-label">Now exploring</p>
+      <h2>What’s on my radar</h2>
+      <ul class="contact-list">
+        <li>AI-native research tools</li>
+        <li>Market microstructure signals</li>
+        <li>Writing systems &amp; thinking frameworks</li>
+      </ul>
+      <p class="contact-footnote">If you’re in these arenas, we’re already aligned.</p>
+    </div>
+  </article>
 </section>

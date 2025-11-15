@@ -10,10 +10,6 @@ title: Blog
 {% assign sorted_tags = site.tags | sort %}
 {% if sorted_tags.size > 0 %}
 <section class="blog-topics" aria-label="Blog topics">
-  <div class="blog-topics__header">
-    <p class="blog-topics__eyebrow">Explore by topic</p>
-    <p class="blog-topics__hint">Jump straight to themes you care about.</p>
-  </div>
   <div class="blog-topics__list">
     {% for tag in sorted_tags %}
       {% assign tag_name = tag[0] %}

@@ -139,35 +139,13 @@ body {
 
 .blog-topics {
   margin-bottom: 2.5rem;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background: rgba(6, 3, 18, 0.15);
-  border: 1px solid rgba(167, 139, 250, 0.15);
-}
-
-.blog-topics__header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 1rem;
-}
-
-.blog-topics__eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  font-size: 0.65rem;
-  color: #c4b5fd;
-}
-
-.blog-topics__hint {
-  color: #d1d5db;
-  font-size: 0.9rem;
 }
 
 .blog-topics__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.65rem;
+  padding: 0.25rem;
 }
 
 .topic-chip {
@@ -177,7 +155,7 @@ body {
   padding: 0.45rem 0.95rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(5, 5, 10, 0.35);
+  background: rgba(5, 5, 10, 0.22);
   color: #f8f8ff;
   font-size: 0.85rem;
   text-decoration: none;

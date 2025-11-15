@@ -4,6 +4,8 @@ description: "I study patterns—in markets, minds, and meaning."
 # IMPORTANT: Replace "your-username" with your actual GitHub username.
 url: "https://farzadona.github.io"
 baseurl: "/farzad-works.github.io"
+email: farzadona@gmail.com
+linkedin_url: "https://www.linkedin.com/in/farzadona/"
 
 # Build settings
 theme: minima # A good default theme, can be removed if you want 100% custom styling.

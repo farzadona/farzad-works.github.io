@@ -7,20 +7,41 @@ title: Blog
   <h1 class="blog-heading">Thinking in public.</h1>
 </section>
 
-{% assign sorted_tags = site.tags | sort %}
-{% if sorted_tags.size > 0 %}
+{% assign curated_tags = site.data.tags | default: empty %}
+{% if curated_tags.size > 0 %}
 <section class="blog-topics" aria-label="Blog topics">
   <div class="blog-topics__list">
-    {% for tag in sorted_tags %}
-      {% assign tag_name = tag[0] %}
-      {% assign tag_posts = tag[1] %}
-      <a class="topic-chip" href="{{ site.baseurl }}/tags/{{ tag_name | slugify }}/">
-        <span>{{ tag_name }}</span>
-        <span class="topic-chip__count">{{ tag_posts | size }}</span>
+    {% for tag in curated_tags %}
+      {% assign tag_posts = site.tags[tag.name] %}
+      {% if tag_posts %}
+        {% assign tag_count = tag_posts | size %}
+      {% else %}
+        {% assign tag_count = 0 %}
+      {% endif %}
+      {% assign tag_classes = 'topic-chip' %}
+      {% if tag_count == 0 %}
+        {% assign tag_classes = tag_classes | append: ' topic-chip--inactive' %}
+      {% endif %}
+      <a class="{{ tag_classes }}" href="{{ site.baseurl }}/tags/{{ tag.slug }}/">
+        <span>{{ tag.name }}</span>
+        <span class="topic-chip__count">{{ tag_count }}</span>
       </a>
     {% endfor %}
   </div>
 </section>
+
+{% assign defined_tag_names = curated_tags | map: 'name' %}
+{% assign rogue_tags = '' | split: ',' %}
+{% for tag_pair in site.tags %}
+  {% unless defined_tag_names contains tag_pair[0] %}
+    {% assign rogue_tags = rogue_tags | push: tag_pair[0] %}
+  {% endunless %}
+{% endfor %}
+{% if rogue_tags.size > 0 %}
+<div class="tag-warning" role="note">
+  <strong>Heads up:</strong> Unknown tags detected — {{ rogue_tags | sort | join: ', ' }}. Update `_data/tags.yml` or adjust post front matter.
+</div>
+{% endif %}
 {% endif %}
 
 {% assign date_format = site.minima.date_format | default: "%B %-d, %Y" %}

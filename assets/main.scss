@@ -172,6 +172,25 @@ body {
   color: #c4b5fd;
 }
 
+.topic-chip--inactive {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.topic-chip--inactive .topic-chip__count {
+  color: #94a3b8;
+}
+
+.tag-warning {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(120, 53, 15, 0.15);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fed7aa;
+  font-size: 0.85rem;
+}
+
 .blog-intro .eyebrow {
   color: #a78bfa;
   font-size: 0.85rem;

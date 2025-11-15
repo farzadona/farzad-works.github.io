@@ -7,8 +7,62 @@ title: Blog
   <h1 class="blog-heading">Thinking in public.</h1>
 </section>
 
+{% assign sorted_tags = site.tags | sort: "first" %}
+{% if sorted_tags.size > 0 %}
+<section class="blog-topics" aria-label="Blog topics">
+  <div class="blog-topics__header">
+    <p class="blog-topics__eyebrow">Explore by topic</p>
+    <p class="blog-topics__hint">Jump straight to themes you care about.</p>
+  </div>
+  <div class="blog-topics__list">
+    {% for tag in sorted_tags %}
+      {% assign tag_name = tag[0] %}
+      {% assign tag_posts = tag[1] %}
+      <a class="topic-chip" href="{{ site.baseurl }}/tags/{{ tag_name | slugify }}/">
+        <span>{{ tag_name }}</span>
+        <span class="topic-chip__count">{{ tag_posts | size }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 {% assign date_format = site.minima.date_format | default: "%B %-d, %Y" %}
-{% if site.posts.size > 0 %}
+{% if paginator and paginator.posts.size > 0 %}
+<section class="blog-feed" aria-label="Blog posts">
+  {% for post in paginator.posts %}
+  <a class="blog-card blog-post-item" href="{{ post.url | relative_url }}" data-node-id="{{ forloop.index0 }}">
+      <div class="blog-card__heading">
+        <h2 class="blog-title">{{ post.title | escape }}</h2>
+        <p class="blog-meta">{{ post.date | date: date_format }}</p>
+      </div>
+      {% if post.tags.size > 0 %}
+      <div class="post-tags blog-tags">
+        {% for tag in post.tags %}
+          <span class="post-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <span class="blog-arrow" aria-hidden="true">→</span>
+  </a>
+  {% endfor %}
+</section>
+{% if paginator.total_pages > 1 %}
+<nav class="blog-pagination" aria-label="Pagination">
+  {% if paginator.previous_page %}
+    <a class="pagination-btn" href="{{ paginator.previous_page_path | relative_url }}">← Newer posts</a>
+  {% else %}
+    <span class="pagination-btn disabled">← Newer posts</span>
+  {% endif %}
+  <span class="pagination-status">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+  {% if paginator.next_page %}
+    <a class="pagination-btn" href="{{ paginator.next_page_path | relative_url }}">Older posts →</a>
+  {% else %}
+    <span class="pagination-btn disabled">Older posts →</span>
+  {% endif %}
+</nav>
+{% endif %}
+{% elsif site.posts.size > 0 %}
 <section class="blog-feed" aria-label="Blog posts">
   {% for post in site.posts %}
   <a class="blog-card blog-post-item" href="{{ post.url | relative_url }}" data-node-id="{{ forloop.index0 }}">

@@ -137,6 +137,63 @@ body {
   margin-bottom: 2.5rem;
 }
 
+.blog-topics {
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(6, 3, 18, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.15);
+}
+
+.blog-topics__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.blog-topics__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 0.65rem;
+  color: #c4b5fd;
+}
+
+.blog-topics__hint {
+  color: #d1d5db;
+  font-size: 0.9rem;
+}
+
+.blog-topics__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.topic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(5, 5, 10, 0.35);
+  color: #f8f8ff;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.topic-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(167, 139, 250, 0.6);
+}
+
+.topic-chip__count {
+  font-size: 0.75rem;
+  color: #c4b5fd;
+}
+
 .blog-intro .eyebrow {
   color: #a78bfa;
   font-size: 0.85rem;
@@ -220,6 +277,39 @@ body {
 
 .blog-card:hover .blog-arrow {
   transform: translateX(6px);
+}
+
+.blog-pagination {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  color: #f3f4f6;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination-btn:hover {
+  border-color: rgba(167, 139, 250, 0.6);
+  color: #fff;
+}
+
+.pagination-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pagination-status {
+  font-size: 0.85rem;
+  color: #9ca3af;
 }
 
 .empty-feed {

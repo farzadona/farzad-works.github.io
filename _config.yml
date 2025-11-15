@@ -10,6 +10,8 @@ linkedin_url: "https://www.linkedin.com/in/farzadona/"
 # Build settings
 theme: minima # A good default theme, can be removed if you want 100% custom styling.
 future: true
+paginate: 6
+paginate_path: "/blog/page:num"
 
 # Header pages
 header_pages:

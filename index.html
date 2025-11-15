@@ -143,6 +143,13 @@
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
         import * as CANNON from 'cannon-es';
 
+        // Ensure Home scene resets when returning via browser back/forward cache
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
         // === Basic Setup ===
         const canvas = document.getElementById('webgl-canvas');
         const loadingMessage = document.getElementById('loading-message');

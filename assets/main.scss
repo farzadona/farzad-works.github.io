@@ -9,11 +9,11 @@
 =============================================================================*/
 
 @mixin frosted-panel {
-  background: rgba(10, 10, 18, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 12px 24px rgba(2, 0, 20, 0.35);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(6, 3, 18, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  box-shadow: 0 8px 24px rgba(3, 0, 12, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 body {

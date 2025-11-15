@@ -62,191 +62,96 @@ custom_background: true
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const pointer = {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-      vx: 0,
-      vy: 0,
-      active: false,
-      influence: 220
-    };
+    const cellSize = 16;
+    const aliveColor = '#a78bfa';
+    const density = 0.9;
+    let cols = 0;
+    let rows = 0;
+    let grid = [];
 
-    let width = 0;
-    let height = 0;
-    let particles = [];
-    let ripples = [];
-    let gradient;
-    let pointerTimeout;
-
-    function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      gradient = createGradient();
-      createParticles();
+    function createGrid() {
+      return Array(rows).fill(null).map(() => Array(cols).fill(0));
     }
 
-    function createGradient() {
-      const g = ctx.createLinearGradient(0, 0, width, height);
-      g.addColorStop(0, 'rgba(6, 3, 20, 0.98)');
-      g.addColorStop(0.45, 'rgba(24, 6, 45, 0.98)');
-      g.addColorStop(1, 'rgba(8, 1, 25, 0.97)');
-      return g;
-    }
-
-    function createParticles() {
-      const count = Math.min(220, Math.max(80, Math.floor((width * height) / 10000)));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: 0.8 + Math.random() * 1.8,
-        hue: 250 + Math.random() * 40
-      }));
-    }
-
-    function addRipple(x, y, strength = 1) {
-      ripples.push({
-        x,
-        y,
-        radius: 0,
-        alpha: 0.45 * strength,
-        decay: 0.004 + Math.random() * 0.008
-      });
-    }
-
-    function updateParticles() {
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -50) p.x = width + 50;
-        if (p.x > width + 50) p.x = -50;
-        if (p.y < -50) p.y = height + 50;
-        if (p.y > height + 50) p.y = -50;
-
-        p.vx *= 0.995;
-        p.vy *= 0.995;
-
-        if (pointer.active) {
-          const dx = p.x - pointer.x;
-          const dy = p.y - pointer.y;
-          const dist = Math.hypot(dx, dy) || 0.001;
-          if (dist < pointer.influence) {
-            const force = (pointer.influence - dist) / pointer.influence;
-            p.vx += (dx / dist) * force * 0.12 + pointer.vx * 0.0004;
-            p.vy += (dy / dist) * force * 0.12 + pointer.vy * 0.0004;
-          }
-        }
-
-        const speed = Math.hypot(p.vx, p.vy);
-        const maxSpeed = 0.9;
-        if (speed > maxSpeed) {
-          p.vx = (p.vx / speed) * maxSpeed;
-          p.vy = (p.vy / speed) * maxSpeed;
-        }
-      });
-    }
-
-    function drawConnections() {
-      const maxDistance = 140;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const a = particles[i];
-          const b = particles[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist > maxDistance) continue;
-
-          const opacity = (maxDistance - dist) / maxDistance;
-          ctx.strokeStyle = `rgba(167, 139, 250, ${opacity * 0.45})`;
-          ctx.lineWidth = opacity * 1.2;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
+    function seedGrid() {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          grid[y][x] = Math.random() > density ? 1 : 0;
         }
       }
     }
 
-    function drawParticles() {
-      particles.forEach((p) => {
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 6);
-        glow.addColorStop(0, `hsla(${p.hue}, 90%, 75%, 0.95)`);
-        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.beginPath();
-        ctx.fillStyle = glow;
-        ctx.arc(p.x, p.y, p.radius * 4, 0, Math.PI * 2);
-        ctx.fill();
-      });
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / cellSize);
+      rows = Math.ceil(canvas.height / cellSize);
+      grid = createGrid();
+      seedGrid();
     }
 
-    function updateRipples() {
-      ripples = ripples.filter((r) => r.alpha > 0);
-      ripples.forEach((r) => {
-        r.radius += 1.6;
-        r.alpha -= r.decay;
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(167, 139, 250, ${Math.max(0, r.alpha)})`;
-        ctx.lineWidth = 1.5;
-        ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-        ctx.stroke();
-      });
+    function countNeighbors(x, y) {
+      let count = 0;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue;
+          const col = (x + i + cols) % cols;
+          const row = (y + j + rows) % rows;
+          count += grid[row][col];
+        }
+      }
+      return count;
     }
 
-    function drawPointerAura() {
-      if (!pointer.active) return;
-      const aura = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, pointer.influence);
-      aura.addColorStop(0, 'rgba(236, 233, 255, 0.18)');
-      aura.addColorStop(0.5, 'rgba(139, 92, 246, 0.08)');
-      aura.addColorStop(1, 'rgba(54, 14, 104, 0)');
-      ctx.beginPath();
-      ctx.fillStyle = aura;
-      ctx.arc(pointer.x, pointer.y, pointer.influence, 0, Math.PI * 2);
-      ctx.fill();
+    function step() {
+      const nextGrid = createGrid();
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const neighbors = countNeighbors(x, y);
+          const state = grid[y][x];
+          if (state === 1 && (neighbors === 2 || neighbors === 3)) {
+            nextGrid[y][x] = 1;
+          } else if (state === 0 && neighbors === 3) {
+            nextGrid[y][x] = 1;
+          }
+        }
+      }
+      grid = nextGrid;
     }
 
-    function render() {
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      updateParticles();
-      drawConnections();
-      drawParticles();
-      drawPointerAura();
-      updateRipples();
-
-      requestAnimationFrame(render);
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = aliveColor;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (grid[y][x] === 1) {
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+        }
+      }
     }
 
-    function handlePointerMove(event) {
+    let lastTime = 0;
+    function animate(time = 0) {
+      if (time - lastTime > 100) {
+        step();
+        draw();
+        lastTime = time;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener('mousemove', (event) => {
       const rect = canvas.getBoundingClientRect();
-      pointer.x = event.clientX - rect.left;
-      pointer.y = event.clientY - rect.top;
-      pointer.vx = event.movementX;
-      pointer.vy = event.movementY;
-      pointer.active = true;
-      clearTimeout(pointerTimeout);
-      pointerTimeout = setTimeout(() => {
-        pointer.active = false;
-      }, 250);
-
-      const speed = Math.min(1.5, Math.hypot(event.movementX, event.movementY) / 20);
-      addRipple(pointer.x, pointer.y, 0.6 + speed * 0.4);
-    }
+      const x = Math.floor((event.clientX - rect.left) / cellSize);
+      const y = Math.floor((event.clientY - rect.top) / cellSize);
+      if (grid[y] && grid[y][x] !== undefined) {
+        grid[y][x] = 1;
+      }
+    });
 
     resize();
-    render();
-
     window.addEventListener('resize', resize);
-    canvas.addEventListener('pointermove', handlePointerMove);
-    canvas.addEventListener('pointerleave', () => {
-      pointer.active = false;
-    });
-    canvas.addEventListener('pointerdown', (event) => {
-      const rect = canvas.getBoundingClientRect();
-      addRipple(event.clientX - rect.left, event.clientY - rect.top, 1.2);
-    });
+    animate();
   });
 </script>

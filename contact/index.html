@@ -10,9 +10,11 @@ custom_background: true
   <canvas id="about-life-canvas"></canvas>
   <div class="relative z-10 -mx-4 sm:-mx-8 lg:-mx-12">
     <section class="min-h-screen w-full flex flex-col items-center justify-center text-center px-6 py-16">
-      <p class="uppercase tracking-[0.4em] text-xs text-violet-300 mb-6 about-text-shadow">Pattern obsessed</p>
-      <h1 class="text-5xl md:text-7xl font-black about-text-shadow mb-6">Farzad Maleki</h1>
-      <p class="text-2xl md:text-3xl font-light text-violet-200 about-text-shadow">Creative systems builder &amp; logic maximalist</p>
+      <div class="about-card w-full max-w-3xl p-10">
+        <p class="uppercase tracking-[0.4em] text-xs text-violet-300 mb-6 about-text-shadow">Pattern obsessed</p>
+        <h1 class="text-5xl md:text-7xl font-black about-text-shadow mb-6">Farzad Maleki</h1>
+        <p class="text-2xl md:text-3xl font-light text-violet-200 about-text-shadow">Creative systems builder &amp; logic maximalist</p>
+      </div>
     </section>
 
     <section id="about-me" class="min-h-screen w-full flex flex-col items-center justify-center text-center px-6 py-16">
@@ -31,8 +33,9 @@ custom_background: true
     </section>
 
     <section class="min-h-screen w-full flex flex-col items-center justify-center text-center px-6 py-16">
-      <h2 class="text-4xl md:text-6xl font-bold about-text-shadow mb-8">Find me on</h2>
-      <div class="flex flex-wrap justify-center gap-10 text-gray-300">
+      <div class="about-card p-10 max-w-4xl w-full">
+        <h2 class="text-4xl md:text-6xl font-bold about-text-shadow mb-8">Find me on</h2>
+        <div class="flex flex-wrap justify-center gap-10 text-gray-300">
         {% assign github_url = site.github_url | default: 'https://github.com/farzadona' %}
         {% assign linkedin_url = site.linkedin_url | default: 'https://www.linkedin.com/in/farzadmaleki' %}
         {% assign x_url = site.x_url | default: 'https://twitter.com/farzadona' %}
@@ -52,6 +55,7 @@ custom_background: true
           </svg>
         </a>
       </div>
+      </div>
     </section>
   </div>
 </div>
@@ -64,7 +68,9 @@ custom_background: true
 
     // Configuration matching the reference effect
     const CELL_SIZE = 15;
-    const CELL_COLOR = '#68f1c2';
+    const CELL_COLOR = '#8b5cf6';
+    const CELL_GLOW = 'rgba(139, 92, 246, 0.6)';
+    const BACKDROP_COLOR = 'rgba(4, 1, 17, 0.92)';
     const UPDATE_INTERVAL = 100; // ms
     const SEED_DENSITY = 0.9; // 10% alive to start
     const MOUSE_SPARKLE_DENSITY = 0.6; // lower = more sparks
@@ -126,8 +132,11 @@ custom_background: true
     }
 
     function drawGrid() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = BACKDROP_COLOR;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = CELL_COLOR;
+      ctx.shadowColor = CELL_GLOW;
+      ctx.shadowBlur = 14;
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           if (grid[y][x] === 1) {
@@ -135,6 +144,7 @@ custom_background: true
           }
         }
       }
+      ctx.shadowBlur = 0;
     }
 
     function gameLoop(timestamp = 0) {
